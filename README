@@ -1,0 +1,75 @@
+Cross browser HTML5 web workers
+===============================
+
+Enable cross browser support of non-blocking HTML5 background workers in your web applications, even for users of internet explorer. 
+
+HTML5 Web Workers are a powerful feature that can enable the next generation of web applications to perform compute intensive client side operations without blocking the UI thread. Unfortunately Web Workers are difficult to justify for use in production because they are still not supported by some rendering engines, most notably Trident, the engine that drives Internet Explorer.  This software aims to provide a solution that enables developers to use web workers in production and promote the adoption of web standards to browser vendors.
+
+This is accomplished by exposing an API that drives a hidden Silverlight application running a BackgroundWorker thread. To quickly get started you can embed the application as an object directly in your web application, hosting the ss.xap Silverlight binary on your server (just copy the examples folder to your web server…make sure to read gotchas at the end of this README first). Or you can tailor the source and compile your own binary to your specific application. You launch the web worker via Javascript as follows (in the parent):
+
+  onSilverlightLoad = function(){
+    var obj = document.getElementById('id_of_Silverlight_object');        
+    // make sure to use the full URL to your worker, relative paths will not be found
+    obj.Content.sl.worker("http://www.example.com/pathto/yourWorker.js");
+    // send your worker a message
+    obj.Content.sl.postmessage('Hi from parent!');                  
+  };
+
+You can receive posted messages in your worker as follows (in the child):
+
+  onmessage = function (s){ 
+    // do something based on s
+  }
+
+When the worker completes you may want to notify the parent. Do this when you finish processing in your worker by calling workercompleted() as follows (in the child): 
+
+workercompleted('Im done!');
+
+It will asynchronously call a workercompleted() function that you have implemented in your app as follows (in the parent):
+
+  workercompleted = function(result){  
+    alert('Workercompleted: '+result);      
+  };
+
+You can also send period notifications from the worker to the parent. You do so by calling workermessage() from your worker as follows (in the child):
+
+workermessage('Hi from child!');
+
+You can set up your parent to asynchronously receive these messages as follows (in the parent):
+workermessage = function(msg){
+   document.getElementById('inbox').innerHTML = msg;
+}
+
+The worker thread idles for a period of time when nothing is happening in your Javascript, otherwise the thread would exit when your Javascript has executed and your code would be unreachable if you happened to call on a worker at a later time. The maximum amount of time to idle before exiting the thread defaults to 10 minutes. You can adjust it in seconds as follows (in the parent):
+
+obj.Content.sl.timeout = 1200;
+
+You may want to utilize traditional HTML5 web workers when they are supported and fall back to this technique when they are not. You can do so as follows (in the parent) 
+
+  try{
+    if(Worker){
+      // use standard workers
+    }
+  }catch(err){
+    // use this worker
+  }
+
+Your worker Javascript is executed by a standalone engine embedded in the Silverlight binary. The Jurassic ECMAscript engine (http://jurassic.codeplex.com) is currently used for this purpose, so you may want to take a look at its documentation in case you run into limitations with very complex code. Please feel free to embed alternate engines such as V8 or IronJS.
+
+Gotchas
+=======
+
+  1. Make sure to use the full URI to your worker, relative paths won't work.
+  2. When building a solution using Silverlight, make sure that you include the pertinent clientaccesspolicy.xml and crossdomain.xml in your document root (examples within).
+  3. The Silverlight binary will only work in a hosted environment, served by a web server. You will not be able to test this offline or with the files locally on your machine. You can also test it at http://inficron.com/worker/
+  4. You may need to add the proper mime-types for clients to read the Silverlight applications you serve. This can be done on Apache as follows:
+     AddType application/xaml+xml .xaml
+     AddType application/x-Silverlight-app .xap
+     AddType application/x-ms-xbap .xbap
+  5. Make sure to keep the onload and onunload params in the Silverlight object (see example). The former is needed to detect when you can launch the worker. The latter is needed to close the background thread on exit.
+
+tl;dr: Non-blocking web workers, even in IE. Check out the source in the example folder.
+
+Like my work? Hire my company for your next job: http://www.inficron.com
+
+Tip jar | 15D4XQvTHcBtHTc3VTxufd6YZkSQSY3Rjh

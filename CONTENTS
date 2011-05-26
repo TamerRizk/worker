@@ -1,0 +1,9 @@
+
+bin: contains the ss.xap Silverlight binary that can be directly used in your app.
+
+example: a simple example that you can try by copying this directory to your web server.
+
+worker: the Visual Studio 2010 project tree, containing source code.
+
+
+

@@ -1,0 +1,3 @@
+AddType application/xaml+xml .xaml
+AddType application/x-silverlight-app .xap
+AddType application/x-ms-xbap .xbap
