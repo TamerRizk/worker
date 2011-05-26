@@ -5,7 +5,7 @@ Enable cross browser support of non-blocking HTML5 background workers in your we
 
 HTML5 Web Workers are a powerful feature that can enable the next generation of web applications to perform compute intensive client side operations without blocking the UI thread. Unfortunately Web Workers are difficult to justify for use in production because they are still not supported by some rendering engines, most notably Trident, the engine that drives Internet Explorer.  This software aims to provide a solution that enables developers to use web workers in production and promote the adoption of web standards to browser vendors.
 
-This is accomplished by exposing an API that drives a hidden Silverlight application running a BackgroundWorker thread. To quickly get started you can embed the application as an object directly in your web application, hosting the ss.xap Silverlight binary on your server (just copy the examples folder to your web server…make sure to read gotchas at the end of this README first). Or you can tailor the source and compile your own binary to your specific application. You launch the web worker via Javascript as follows (in the parent):
+This is accomplished by exposing an API that drives a hidden Silverlight application running a BackgroundWorker thread. To quickly get started you can embed the application as an object directly in your web application, hosting the ss.xap Silverlight binary on your server (just copy the examples folder to your web server and make sure to read gotchas at the end of this README first). Or you can tailor the source and compile your own binary to your specific application. You launch the web worker via Javascript as follows (in the parent):
 
   onSilverlightLoad = function(){
     var obj = document.getElementById('id_of_Silverlight_object');        
@@ -59,14 +59,14 @@ Your worker Javascript is executed by a standalone engine embedded in the Silver
 Gotchas
 =======
 
-  1. Make sure to use the full URI to your worker, relative paths won't work.
-  2. When building a solution using Silverlight, make sure that you include the pertinent clientaccesspolicy.xml and crossdomain.xml in your document root (examples within).
-  3. The Silverlight binary will only work in a hosted environment, served by a web server. You will not be able to test this offline or with the files locally on your machine. You can also test it at http://inficron.com/worker/
-  4. You may need to add the proper mime-types for clients to read the Silverlight applications you serve. This can be done on Apache as follows:
-     AddType application/xaml+xml .xaml
-     AddType application/x-Silverlight-app .xap
-     AddType application/x-ms-xbap .xbap
-  5. Make sure to keep the onload and onunload params in the Silverlight object (see example). The former is needed to detect when you can launch the worker. The latter is needed to close the background thread on exit.
+1. Make sure to use the full URI to your worker, relative paths won't work.
+2. When building a solution using Silverlight, make sure that you include the pertinent clientaccesspolicy.xml and crossdomain.xml in your document root (examples within).
+3. The Silverlight binary will only work in a hosted environment, served by a web server. You will not be able to test this offline or with the files locally on your machine. You can also test it at http://inficron.com/worker/
+4. You may need to add the proper mime-types for clients to read the Silverlight applications you serve. This can be done on Apache as follows:
+   AddType application/xaml+xml .xaml
+   AddType application/x-Silverlight-app .xap
+   AddType application/x-ms-xbap .xbap
+5. Make sure to keep the onload and onunload params in the Silverlight object (see example). The former is needed to detect when you can launch the worker. The latter is needed to close the background thread on exit.
 
 tl;dr: Non-blocking web workers, even in IE. Check out the source in the example folder.
 
