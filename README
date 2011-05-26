@@ -10,7 +10,7 @@ This is accomplished by exposing an API that drives a hidden Silverlight applica
   onSilverlightLoad = function(){
     var obj = document.getElementById('id_of_Silverlight_object');        
     // make sure to use the full URL to your worker, relative paths will not be found
-    obj.Content.sl.worker("http://www.example.com/pathto/yourWorker.js");
+    obj.Content.sl.worker('http://www.example.com/pathto/yourWorker.js');
     // send your worker a message
     obj.Content.sl.postmessage('Hi from parent!');                  
   };
