@@ -36,9 +36,10 @@ You can also send periodic notifications from the worker to the parent. You do s
 workermessage('Hi from child!');
 
 You can set up your parent to asynchronously receive these messages as follows (in the parent):
-workermessage = function(msg){
-   document.getElementById('inbox').innerHTML = msg;
-}
+
+  workermessage = function(msg){
+    document.getElementById('inbox').innerHTML = msg;
+  }
 
 The worker thread idles for a period of time when nothing is happening in your Javascript, otherwise the thread would exit when your Javascript has executed and your code would be unreachable if you happened to call on a worker at a later time. The maximum amount of time to idle before exiting the thread defaults to 10 minutes. You can adjust it in seconds as follows (in the parent):
 
