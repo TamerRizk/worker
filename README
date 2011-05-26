@@ -31,7 +31,7 @@ It will asynchronously call a workercompleted() function that you have implement
     alert('Workercompleted: '+result);      
   };
 
-You can also send period notifications from the worker to the parent. You do so by calling workermessage() from your worker as follows (in the child):
+You can also send periodic notifications from the worker to the parent. You do so by calling workermessage() from your worker as follows (in the child):
 
 workermessage('Hi from child!');
 
