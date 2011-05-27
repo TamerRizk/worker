@@ -16,7 +16,7 @@ This is accomplished by exposing an API that drives a hidden Silverlight applica
   };
 
 You can receive posted messages in your worker as follows (in the child):
-
+ 
   onmessage = function (s){ 
     // do something based on s
   };
