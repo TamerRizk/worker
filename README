@@ -20,7 +20,7 @@ You can receive posted messages in your worker as follows (in the child):
   onmessage = function (s){ 
     // do something based on s
   };
-
+ 
 When the worker completes you may want to notify the parent. Do this when you finish processing in your worker by calling workercompleted() as follows (in the child): 
 
 workercompleted('Im done!');
