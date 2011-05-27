@@ -19,7 +19,7 @@ You can receive posted messages in your worker as follows (in the child):
 
   onmessage = function (s){ 
     // do something based on s
-  }
+  };
 
 When the worker completes you may want to notify the parent. Do this when you finish processing in your worker by calling workercompleted() as follows (in the child): 
 
@@ -39,7 +39,7 @@ You can set up your parent to asynchronously receive these messages as follows (
 
   workermessage = function(msg){
     document.getElementById('inbox').innerHTML = msg;
-  }
+  };
 
 The worker thread idles for a period of time when nothing is happening in your Javascript, otherwise the thread would exit when your Javascript has executed and your code would be unreachable if you happened to call on a worker at a later time. The maximum amount of time to idle before exiting the thread defaults to 10 minutes. You can adjust it in seconds as follows (in the parent):
 
