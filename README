@@ -47,13 +47,10 @@ obj.Content.sl.timeout = 1200;
 
 You may want to utilize traditional HTML5 web workers when they are supported and fall back to this technique when they are not. You can do so as follows (in the parent) 
 
-  try{
-    if(Worker){
-      // use standard workers
-    }
-  }catch(err){
-    // use this worker
-  }
+hasWorker = function() {
+  //return false;
+  return (typeof(Worker) != "undefined") ? true : false;
+};
 
 Your worker Javascript is executed by a standalone engine embedded in the Silverlight binary. The Jurassic ECMAscript engine (http://jurassic.codeplex.com) is currently used for this purpose, so you may want to take a look at its documentation in case you run into limitations with very complex code. Please feel free to embed alternate engines such as V8 or IronJS.
 
