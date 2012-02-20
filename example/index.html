@@ -1,63 +1,80 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-	<title>Worker Demo</title>
-	<style type="text/css">
+        <title>Worker Demo</title>
+        <style type="text/css">
     html, body {
-	    height: 100%;
-	    overflow: auto;
+            height: 100%;
+            overflow: auto;
+            margin:20px;
     }
     body {
-	    padding: 0;
-	    margin: 0;
+            padding: 0;
+            margin: 0;
     }
-	</style>
+    h3 { margin:0px 0px 15px 0px;}
+        </style>
 </head>
 <body>
-  <div id="supported">&nbsp;</div>
-  <div id="out">Calculating in thread...</div>
-  <form id="form1" runat="server" style="height:0px;width:0px;">
-    <div id="silverlightControlHost">
+<h3>Cross browser Web Worker demo</h3>
+    <div id="silverlightControlHost" style="display:none">
       <object id="obj" data="data:application/x-silverlight-2," type="application/x-silverlight-2" width="1" height="1">
-		      <param name="source" value="ss.xap"/>
-		      <param name="onError" value="onSilverlightError" />
-		      <param name="background" value="white" />
-		      <param name="onLoad" value="onSilverlightLoad" />
-		      <param name="onunLoad" value="this.Content.sl.close()" />
-		      <param name="minRuntimeVersion" value="3.0.40818.0" />
-		      <param name="autoUpgrade" value="true" />
+                      <param name="source" value="ss.xap"/>
+                      <param name="onError" value="onSilverlightError" />
+                      <param name="background" value="white" />
+                      <param name="onLoad" value="onSilverlightLoad" />
+                      <param name="onunLoad" value="this.Content.sl.close()" />
+                      <param name="minRuntimeVersion" value="3.0.40818.0" />
+                      <param name="autoUpgrade" value="true" />
+<a href="http://go.microsoft.com/fwlink/?LinkID=149156&v=4.0.60310.0" style="text-decoration: none;"><img src="http://go.microsoft.com/fwlink/?LinkId=161376" alt="Get Microsoft Silverlight" style="border-style: none"/></a>
       </object>
       <iframe id="_sl_historyFrame" style="visibility:hidden;height:0px;width:0px;border:0px"></iframe>
     </div>
-  </form>
 <br/>
-<input type="button" value="click me 25 times" onclick="document.getElementById('test').innerHTML=parseInt(document.getElementById('test').innerHTML,10)+1;"/><br/>
-<div id="test">0</div>
+<input type="button" value="click me ten times" onclick="doClick();"/><br/>
+<div id="test" style="margin:10px 0px 0px 65px;font-size:20px;font-weight:bold;">0</div>
+  <div id="out">Calculating in worker thread...</div>
 <script type="text/javascript">
+  var worker;
+  hasWorker = function() {
+     //return false;
+     return (typeof(Worker) != "undefined") ? true : false;
+  };
+
   onSilverlightError = function(sender, args) {
     throw new Error(args.ErrorType+ ": "+args.ErrorCode);
   };
 
   onSilverlightLoad = function(){
-    var obj = document.getElementById('obj');        
-    obj.Content.sl.worker("http://inficron.com/worker/worker.js");
-    obj.Content.sl.postmessage("Hi from parent!");                  
+    if(hasWorker) return;
+    worker = document.getElementById('obj');        
+    worker.Content.sl.worker(document.location.href.replace(/\/[^\/]+$/,'')+"/worker.js");
   };
-          
-  workercompleted = function(result){  
-    alert("Workercompleted: "+result);      
-  };
-  
+            
   workermessage = function(msg){
-    document.getElementById('out').innerHTML=document.getElementById('out').innerHTML+' '+msg;
-  }; 
-	try{
-		if(Worker){
-			//use standard workers
-		}
-	}catch(err){
-    document.getElementById('supported').innerHTML='[fyi, this browser does not natively support HTML5 workers]';
-  }       
-</script>    
+    var o = document.getElementById("out");
+    o.innerHTML = o.innerHTML + " " + (hasWorker ? msg.data : msg);
+
+  };
+  workercompleted = function(msg){
+    //
+  };
+
+  doClick = function(){
+    var o = document.getElementById("test");
+    var i = parseInt(o.innerHTML, 10) + 1;
+    o.innerHTML= i;
+    if(i>9)
+       worker.terminate();
+  };
+
+  if(hasWorker){
+     worker = new Worker("worker.js");  
+     worker.onmessage = workermessage;            
+  }else{
+     document.getElementById("silverlightControlHost").style.display = "block";
+  } 
+
+</script>
 </body>
 </html>
